@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LaunchPad | Startup jobs for skill-first candidates</title>
+  <meta
+    name="description"
+    content="LaunchPad helps people find work and internships with small startups by matching skills, projects, and potential instead of only formal experience."
+  />
+  <style>
+    :root {
+      --ink: #18202f;
+      --muted: #647084;
+      --line: #dde3ec;
+      --surface: #ffffff;
+      --soft: #f6f8fb;
+      --brand: #2563eb;
+      --brand-dark: #1d4ed8;
+      --mint: #10b981;
+      --gold: #f59e0b;
+      --rose: #f43f5e;
+      --shadow: 0 16px 40px rgba(24, 32, 47, 0.1);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--soft);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px clamp(16px, 4vw, 48px);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--brand);
+      font-weight: 900;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 650;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn:hover {
+      background: var(--brand-dark);
+    }
+
+    .btn.secondary {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      box-shadow: none;
+    }
+
+    .btn.ghost {
+      background: transparent;
+      color: var(--brand);
+      box-shadow: none;
+      padding-inline: 0;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: clamp(28px, 5vw, 64px);
+      align-items: center;
+      padding: clamp(34px, 6vw, 72px) clamp(16px, 4vw, 48px) 32px;
+      background:
+        linear-gradient(120deg, rgba(37, 99, 235, 0.12), rgba(16, 185, 129, 0.1)),
+        #fff;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 14px;
+      color: var(--brand-dark);
+      font-weight: 800;
+      font-size: 0.88rem;
+    }
+
+    .pulse {
+      width: 9px;
+      height: 9px;
+      border-radius: 99px;
+      background: var(--mint);
+      box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.16);
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(2.35rem, 6vw, 5.4rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 680px;
+      color: var(--muted);
+      font-size: clamp(1.02rem, 2vw, 1.25rem);
+      line-height: 1.6;
+    }
+
+    .hero-actions,
+    .search-row,
+    .chips,
+    .card-actions,
+    .match-row,
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .stats {
+      margin-top: 26px;
+    }
+
+    .stat {
+      min-width: 130px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.55rem;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .preview-board {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .mini-card {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .mini-card.highlight {
+      border-color: rgba(37, 99, 235, 0.35);
+      background: #f8fbff;
+    }
+
+    .profile-line {
+      display: grid;
+      grid-template-columns: 46px 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 900;
+      background: var(--ink);
+    }
+
+    .avatar.blue {
+      background: var(--brand);
+    }
+
+    .avatar.green {
+      background: var(--mint);
+    }
+
+    .avatar.gold {
+      background: var(--gold);
+    }
+
+    .name {
+      font-weight: 850;
+    }
+
+    .role,
+    .meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #edf4ff;
+      color: var(--brand-dark);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    main {
+      padding: 28px clamp(16px, 4vw, 48px) 58px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 10px 28px rgba(24, 32, 47, 0.06);
+    }
+
+    .panel-header {
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-header h2,
+    .panel-header h3 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .panel-body {
+      padding: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+
+    label {
+      color: var(--ink);
+      font-weight: 750;
+      font-size: 0.9rem;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px 12px;
+      background: #fff;
+      color: var(--ink);
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .filters {
+      position: sticky;
+      top: 82px;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      margin-bottom: 16px;
+    }
+
+    .results-header h2 {
+      margin: 0 0 5px;
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .job-card {
+      display: grid;
+      gap: 14px;
+      min-height: 100%;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 10px 26px rgba(24, 32, 47, 0.06);
+    }
+
+    .job-top {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: 13px;
+      align-items: center;
+    }
+
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 52px;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 900;
+      background: var(--ink);
+    }
+
+    .job-card h3 {
+      margin: 0;
+      font-size: 1.08rem;
+    }
+
+    .job-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .chips {
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink);
+      background: #fff;
+      font-size: 0.82rem;
+      font-weight: 750;
+    }
+
+    .match-meter {
+      overflow: hidden;
+      height: 10px;
+      flex: 1 1 150px;
+      border-radius: 999px;
+      background: #e9eef7;
+    }
+
+    .match-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--mint), var(--brand));
+    }
+
+    .match-text {
+      min-width: 70px;
+      color: var(--ink);
+      font-weight: 850;
+      text-align: right;
+    }
+
+    .creator {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.7fr);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .steps {
+      display: grid;
+      gap: 12px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .step-num {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--brand);
+      font-weight: 900;
+    }
+
+    .step h3 {
+      margin: 0 0 4px;
+      font-size: 1rem;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    dialog {
+      width: min(560px, calc(100% - 28px));
+      border: 0;
+      border-radius: 8px;
+      padding: 0;
+      box-shadow: var(--shadow);
+    }
+
+    dialog::backdrop {
+      background: rgba(24, 32, 47, 0.5);
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal-head h2 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+
+    .close {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 18px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      display: none;
+      max-width: 360px;
+      padding: 14px 16px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--ink);
+      box-shadow: var(--shadow);
+      font-weight: 750;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .workspace,
+      .creator {
+        grid-template-columns: 1fr;
+      }
+
+      .filters {
+        position: static;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .nav-link {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 30px;
+      }
+
+      .results-header {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-line {
+        grid-template-columns: 46px 1fr;
+      }
+
+      .profile-line .badge {
+        grid-column: 1 / -1;
+        width: fit-content;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand" aria-label="LaunchPad home">
+        <span class="brand-mark">L</span>
+        <span>LaunchPad</span>
+      </div>
+      <nav class="nav-actions" aria-label="Primary navigation">
+        <a class="nav-link" href="#opportunities">Opportunities</a>
+        <a class="nav-link" href="#profile">Skill Profile</a>
+        <button class="btn secondary" type="button" data-open-profile>Create Profile</button>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow"><span class="pulse"></span>Skill-first hiring for startup teams</p>
+        <h1>Find work before your resume looks perfect.</h1>
+        <p>
+          LaunchPad helps early-career builders, career switchers, and self-taught talent connect with small startups that care about projects, proof, and potential.
+        </p>
+        <div class="hero-actions">
+          <a class="btn" href="#opportunities">Browse roles</a>
+          <button class="btn secondary" type="button" data-open-profile>Build skill profile</button>
+        </div>
+        <div class="stats" aria-label="LaunchPad statistics">
+          <div class="stat">
+            <strong>128</strong>
+            <span>startup roles</span>
+          </div>
+          <div class="stat">
+            <strong>74%</strong>
+            <span>experience optional</span>
+          </div>
+          <div class="stat">
+            <strong>2 min</strong>
+            <span>quick apply</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="preview-board" aria-label="Candidate match preview">
+        <div class="mini-card highlight">
+          <div class="profile-line">
+            <div class="avatar blue">AM</div>
+            <div>
+              <div class="name">Amina M.</div>
+              <div class="role">React, support ops, product thinking</div>
+            </div>
+            <span class="badge">92% match</span>
+          </div>
+        </div>
+        <div class="mini-card">
+          <div class="profile-line">
+            <div class="avatar green">JS</div>
+            <div>
+              <div class="name">Jun S.</div>
+              <div class="role">No-code automations, QA, customer research</div>
+            </div>
+            <span class="badge">Intern ready</span>
+          </div>
+        </div>
+        <div class="mini-card">
+          <strong>Proof beats pedigree</strong>
+          <p class="meta">Candidates attach projects, screenshots, GitHub links, demos, case studies, and short work samples.</p>
+        </div>
+      </aside>
+    </section>
+
+    <main>
+      <section class="workspace" id="opportunities">
+        <aside class="panel filters" aria-label="Search filters">
+          <div class="panel-header">
+            <h2>Find your fit</h2>
+          </div>
+          <div class="panel-body">
+            <div class="field">
+              <label for="search">Search roles or skills</label>
+              <input id="search" type="search" placeholder="React, sales, design, ops" />
+            </div>
+            <div class="field">
+              <label for="track">Track</label>
+              <select id="track">
+                <option value="all">All tracks</option>
+                <option value="Product">Product</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Growth">Growth</option>
+                <option value="Operations">Operations</option>
+                <option value="Design">Design</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="type">Role type</label>
+              <select id="type">
+                <option value="all">All types</option>
+                <option value="Internship">Internship</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Full-time">Full-time</option>
+                <option value="Apprenticeship">Apprenticeship</option>
+              </select>
+            </div>
+            <button class="btn" type="button" data-open-profile>Improve matches</button>
+          </div>
+        </aside>
+
+        <section aria-label="Opportunity results">
+          <div class="results-header">
+            <div>
+              <h2>Startup opportunities</h2>
+              <div class="meta" id="resultCount">Showing all roles</div>
+            </div>
+            <button class="btn secondary" type="button" id="resetFilters">Reset filters</button>
+          </div>
+          <div class="results-grid" id="jobList"></div>
+        </section>
+      </section>
+
+      <section class="creator" id="profile">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>How LaunchPad helps without formal experience</h2>
+          </div>
+          <div class="panel-body steps">
+            <article class="step">
+              <span class="step-num">1</span>
+              <div>
+                <h3>Turn skills into signals</h3>
+                <p>Add tools, projects, volunteer work, coursework, short demos, and problem-solving examples.</p>
+              </div>
+            </article>
+            <article class="step">
+              <span class="step-num">2</span>
+              <div>
+                <h3>Match with small startups</h3>
+                <p>Roles are ranked by skill overlap, learning potential, availability, and proof you can show today.</p>
+              </div>
+            </article>
+            <article class="step">
+              <span class="step-num">3</span>
+              <div>
+                <h3>Apply with context</h3>
+                <p>Each quick application includes a focused note and the strongest proof points for that startup.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <div class="panel-header">
+            <h2>Prototype roadmap</h2>
+          </div>
+          <div class="panel-body">
+            <div class="chips">
+              <span class="chip">Candidate profiles</span>
+              <span class="chip">Startup role board</span>
+              <span class="chip">Skill matching</span>
+              <span class="chip">Quick apply</span>
+              <span class="chip">Project proof</span>
+              <span class="chip">Founder inbox</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="applyModal">
+    <form method="dialog">
+      <div class="modal-head">
+        <div>
+          <h2 id="modalTitle">Apply</h2>
+          <div class="meta" id="modalCompany"></div>
+        </div>
+        <button class="close" type="submit" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="applicantName">Name</label>
+          <input id="applicantName" placeholder="Your name" />
+        </div>
+        <div class="field">
+          <label for="applicantSkills">Top skills</label>
+          <input id="applicantSkills" placeholder="Example: React, support, Figma" />
+        </div>
+        <div class="field">
+          <label for="proofLink">Proof link</label>
+          <input id="proofLink" placeholder="GitHub, portfolio, case study, demo, Notion page" />
+        </div>
+        <div class="field">
+          <label for="pitch">Short pitch</label>
+          <textarea id="pitch" rows="4" placeholder="What can you help this startup do in the next 30 days?"></textarea>
+        </div>
+        <button class="btn" type="button" id="sendApplication">Send application</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="profileModal">
+    <form method="dialog">
+      <div class="modal-head">
+        <div>
+          <h2>Build your LaunchPad profile</h2>
+          <div class="meta">This prototype stores your skills locally in your browser.</div>
+        </div>
+        <button class="close" type="submit" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="profileName">Name</label>
+          <input id="profileName" placeholder="Your name" />
+        </div>
+        <div class="field">
+          <label for="profileGoal">Goal</label>
+          <select id="profileGoal">
+            <option>Find an internship</option>
+            <option>Find first full-time role</option>
+            <option>Find part-time startup work</option>
+            <option>Switch careers</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="profileSkills">Skills</label>
+          <input id="profileSkills" placeholder="React, Python, sales, design, customer support" />
+        </div>
+        <div class="field">
+          <label for="profileProof">Best proof of work</label>
+          <textarea id="profileProof" rows="4" placeholder="Describe a project, demo, course, volunteer effort, or result you can show."></textarea>
+        </div>
+        <button class="btn" type="button" id="saveProfile">Save profile</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const jobs = [
+      {
+        title: "Product Intern",
+        company: "BrightCart",
+        initials: "BC",
+        track: "Product",
+        type: "Internship",
+        location: "Remote",
+        skills: ["user research", "figma", "writing", "product thinking"],
+        description: "Help a tiny commerce startup interview users, organize feedback, and turn insights into product improvements.",
+        match: 92,
+        color: "#2563eb"
+      },
+      {
+        title: "Junior Frontend Builder",
+        company: "LedgerLoop",
+        initials: "LL",
+        track: "Engineering",
+        type: "Apprenticeship",
+        location: "Hybrid",
+        skills: ["html", "css", "javascript", "react"],
+        description: "Ship small UI features, fix bugs, and learn directly from the founding engineer at a finance automation startup.",
+        match: 88,
+        color: "#10b981"
+      },
+      {
+        title: "Growth Assistant",
+        company: "NichePilot",
+        initials: "NP",
+        track: "Growth",
+        type: "Part-time",
+        location: "Remote",
+        skills: ["copywriting", "social media", "analytics", "outreach"],
+        description: "Test marketing channels, write experiments, and help founders reach their first 1,000 users.",
+        match: 84,
+        color: "#f59e0b"
+      },
+      {
+        title: "Customer Ops Associate",
+        company: "CareNest",
+        initials: "CN",
+        track: "Operations",
+        type: "Full-time",
+        location: "Remote",
+        skills: ["support", "notion", "process", "communication"],
+        description: "Support customers, improve internal workflows, and document repeatable processes for a health-tech startup.",
+        match: 81,
+        color: "#f43f5e"
+      },
+      {
+        title: "Design Generalist Intern",
+        company: "TinyAtlas",
+        initials: "TA",
+        track: "Design",
+        type: "Internship",
+        location: "Remote",
+        skills: ["figma", "visual design", "prototyping", "research"],
+        description: "Create landing pages, product mockups, and simple brand assets for a travel planning startup.",
+        match: 79,
+        color: "#7c3aed"
+      },
+      {
+        title: "Automation Builder",
+        company: "OpsSpark",
+        initials: "OS",
+        track: "Operations",
+        type: "Apprenticeship",
+        location: "Remote",
+        skills: ["zapier", "airtable", "no-code", "qa"],
+        description: "Build lightweight automations for startup clients and learn how operations teams scale without huge budgets.",
+        match: 86,
+        color: "#0f766e"
+      }
+    ];
+
+    const jobList = document.querySelector("#jobList");
+    const search = document.querySelector("#search");
+    const track = document.querySelector("#track");
+    const type = document.querySelector("#type");
+    const resultCount = document.querySelector("#resultCount");
+    const applyModal = document.querySelector("#applyModal");
+    const profileModal = document.querySelector("#profileModal");
+    const toast = document.querySelector("#toast");
+
+    function renderJobs() {
+      const query = search.value.trim().toLowerCase();
+      const selectedTrack = track.value;
+      const selectedType = type.value;
+
+      const filtered = jobs.filter((job) => {
+        const haystack = [job.title, job.company, job.track, job.type, ...job.skills].join(" ").toLowerCase();
+        const matchesSearch = !query || haystack.includes(query);
+        const matchesTrack = selectedTrack === "all" || job.track === selectedTrack;
+        const matchesType = selectedType === "all" || job.type === selectedType;
+        return matchesSearch && matchesTrack && matchesType;
+      });
+
+      resultCount.textContent = filtered.length === 1 ? "Showing 1 role" : `Showing ${filtered.length} roles`;
+      jobList.innerHTML = filtered.map(createJobCard).join("");
+
+      document.querySelectorAll("[data-apply]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const job = jobs.find((item) => item.title === button.dataset.apply);
+          openApplyModal(job);
+        });
+      });
+    }
+
+    function createJobCard(job) {
+      return `
+        <article class="job-card">
+          <div class="job-top">
+            <div class="logo" style="background:${job.color}">${job.initials}</div>
+            <div>
+              <h3>${job.title}</h3>
+              <div class="meta">${job.company} · ${job.location} · ${job.type}</div>
+            </div>
+          </div>
+          <p>${job.description}</p>
+          <div class="chips">
+            ${job.skills.map((skill) => `<span class="chip">${skill}</span>`).join("")}
+          </div>
+          <div class="match-row" aria-label="${job.match}% match">
+            <div class="match-meter"><div class="match-fill" style="width:${job.match}%"></div></div>
+            <div class="match-text">${job.match}%</div>
+          </div>
+          <div class="card-actions">
+            <button class="btn" type="button" data-apply="${job.title}">Quick apply</button>
+            <button class="btn ghost" type="button" onclick="showToast('Saved ${job.title} at ${job.company}')">Save</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function openApplyModal(job) {
+      document.querySelector("#modalTitle").textContent = `Apply for ${job.title}`;
+      document.querySelector("#modalCompany").textContent = `${job.company} · ${job.type} · ${job.location}`;
+      applyModal.showModal();
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    search.addEventListener("input", renderJobs);
+    track.addEventListener("change", renderJobs);
+    type.addEventListener("change", renderJobs);
+
+    document.querySelector("#resetFilters").addEventListener("click", () => {
+      search.value = "";
+      track.value = "all";
+      type.value = "all";
+      renderJobs();
+    });
+
+    document.querySelectorAll("[data-open-profile]").forEach((button) => {
+      button.addEventListener("click", () => profileModal.showModal());
+    });
+
+    document.querySelector("#sendApplication").addEventListener("click", () => {
+      const name = document.querySelector("#applicantName").value.trim() || "Your application";
+      applyModal.close();
+      showToast(`${name} was submitted. In a real version, this would go to the startup founder.`);
+    });
+
+    document.querySelector("#saveProfile").addEventListener("click", () => {
+      const profile = {
+        name: document.querySelector("#profileName").value,
+        goal: document.querySelector("#profileGoal").value,
+        skills: document.querySelector("#profileSkills").value,
+        proof: document.querySelector("#profileProof").value
+      };
+      localStorage.setItem("launchpadProfile", JSON.stringify(profile));
+      profileModal.close();
+      showToast("Profile saved locally. Your matches are ready to improve.");
+    });
+
+    const savedProfile = JSON.parse(localStorage.getItem("launchpadProfile") || "null");
+    if (savedProfile) {
+      document.querySelector("#profileName").value = savedProfile.name || "";
+      document.querySelector("#profileGoal").value = savedProfile.goal || "Find an internship";
+      document.querySelector("#profileSkills").value = savedProfile.skills || "";
+      document.querySelector("#profileProof").value = savedProfile.proof || "";
+    }
+
+    renderJobs();
+  </script>
+</body>
+</html>
